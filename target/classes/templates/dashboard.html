@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>HomeEco Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- 
+     /* =========================================================
+    GLOBAL STYLES & RESET
+    ========================================================= */ -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Tahoma, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background:
+                linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)),
+                url("https://images.unsplash.com/photo-1509395176047-4a66953fd231");
+            background-size: cover;
+            background-attachment: fixed;
+            color: #fff;
+        }
+
+        /* =========================================================
+   ANIMATIONS
+   ========================================================= */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0)
+            }
+
+            50% {
+                transform: translateY(-10px)
+            }
+
+            100% {
+                transform: translateY(0)
+            }
+        }
+
+        @keyframes glow {
+            0% {
+                box-shadow: 0 0 10px rgba(46, 204, 113, .3)
+            }
+
+            50% {
+                box-shadow: 0 0 30px rgba(46, 204, 113, .7)
+            }
+
+            100% {
+                box-shadow: 0 0 10px rgba(46, 204, 113, .3)
+            }
+        }
+
+        /* =========================================================
+   NAVBAR
+   ========================================================= */
+        .navbar {
+            width: 100%;
+            padding: 25px 50px;
+            background: rgba(0, 0, 0, .7);
+            backdrop-filter: blur(10px);
+-webkit-backdrop-filter: blur(10px);
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar h1 {
+            font-size: 30px;
+            color: #2ecc71;
+            letter-spacing: 1px;
+        }
+
+        .navbar a {
+            color: #fff;
+            text-decoration: none;
+            margin-left: 30px;
+            font-size: 16px;
+            position: relative;
+            transition: .3s;
+        }
+
+        .navbar a::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -6px;
+            width: 0;
+            height: 3px;
+            background: #2ecc71;
+            transition: .3s;
+        }
+
+        .navbar a:hover {
+            color: #2ecc71;
+        }
+
+        .navbar a:hover::after {
+            width: 100%;
+        }
+
+        /* =========================================================
+   DASHBOARD WRAPPER
+   ========================================================= */
+        .dashboard {
+            max-width: 1200px;
+            margin: 60px auto;
+            padding: 20px;
+            animation: fadeIn 1.2s ease;
+        }
+
+        /* =========================================================
+   WELCOME SECTION
+   ========================================================= */
+        .welcome {
+            background: rgba(0, 0, 0, .6);
+            border-radius: 18px;
+            padding: 35px;
+            margin-bottom: 40px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, .5);
+        }
+
+        .welcome h2 {
+            font-size: 32px;
+            color: #2ecc71;
+            margin-bottom: 10px;
+        }
+
+        .welcome p {
+            font-size: 17px;
+            line-height: 1.7;
+            color: #eaeaea;
+        }
+
+        /* =========================================================
+   STAT CARDS
+   ========================================================= */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .stat-card {
+            background: rgba(0, 0, 0, .65);
+            border-radius: 18px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, .4);
+            animation: float 6s ease-in-out infinite;
+            transition: .4s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-12px) scale(1.03);
+            animation: glow 2s infinite;
+        }
+
+        .stat-card h3 {
+            font-size: 22px;
+            color: #2ecc71;
+            margin-bottom: 15px;
+        }
+
+        .stat-card p {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        /* =========================================================
+   FEATURE CARDS
+   ========================================================= */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 35px;
+        }
+
+        .feature-card {
+            background:
+                linear-gradient(rgba(0, 0, 0, .55), rgba(0, 0, 0, .55)),
+                url("https://images.unsplash.com/photo-1581091870627-3d8c1d3f1e0b");
+            background-size: cover;
+            background-position: center;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, .6);
+            transition: .4s;
+        }
+
+        .feature-card.water {
+            background:
+                linear-gradient(rgba(0, 0, 0, .55), rgba(0, 0, 0, .55)),
+                url("https://images.unsplash.com/photo-1504384308090-c894fdcc538d");
+            background-size: cover;
+            background-position: center;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-15px) scale(1.04);
+        }
+
+        .feature-card h3 {
+            font-size: 26px;
+            color: #2ecc71;
+            margin-bottom: 15px;
+        }
+
+        .feature-card p {
+            font-size: 16px;
+            line-height: 1.7;
+            margin-bottom: 25px;
+        }
+
+        .feature-card a {
+            display: inline-block;
+            padding: 12px 26px;
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: #fff;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: .3s;
+        }
+
+        .feature-card a:hover {
+            box-shadow: 0 12px 30px rgba(46, 204, 113, .6);
+            transform: scale(1.05);
+        }
+
+        /* =========================================================
+   FOOTER
+   ========================================================= */
+        .footer {
+            margin-top: 70px;
+            text-align: center;
+            padding: 30px;
+            background: rgba(0, 0, 0, .7);
+            border-radius: 15px;
+        }
+
+        .footer p {
+            color: #ccc;
+            font-size: 14px;
+        }
+
+        /* =========================================================
+   RESPONSIVE
+   ========================================================= */
+        @media(max-width:768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 15px;
+                padding: 30px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ================= NAVBAR ================= -->
+    <div class="navbar">
+        <h1>🌱 HomeEco</h1>
+        <div>
+            <a href="energy.html">Energy</a>
+            <a href="water.html">Water</a>
+            <a href="login.html">Logout</a>
+        </div>
+    </div>
+
+    <!-- ================= DASHBOARD ================= -->
+    <div class="dashboard">
+
+        <div class="welcome">
+            <h2>Welcome to HomeEco Dashboard</h2>
+            <p>
+                Monitor, analyze, and optimize your household energy and water usage.
+                HomeEco helps you save money, reduce wastage, and live sustainably.
+            </p>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <h3>Daily Energy</h3>
+                <p>5.4 kWh</p>
+            </div>
+            <div class="stat-card">
+                <h3>Monthly Energy</h3>
+                <p>142 kWh</p>
+            </div>
+            <div class="stat-card">
+                <h3>Daily Water</h3>
+                <p>120 L</p>
+            </div>
+            <div class="stat-card">
+                <h3>Monthly Water</h3>
+                <p>3200 L</p>
+            </div>
+        </div>
+
+        <div class="features">
+            <div class="feature-card">
+                <h3>⚡ Energy Monitoring</h3>
+                <p>
+                    Track real-time electricity usage, identify wastage,
+                    and optimize energy consumption for a greener home.
+                </p>
+                <a href="energy.html">View Energy Details</a>
+            </div>
+
+            <div class="feature-card water">
+                <h3>💧 Water Monitoring</h3>
+                <p>
+                    Monitor daily water usage, detect leaks,
+                    and reduce unnecessary water wastage efficiently.
+                </p>
+                <a href="water.html">View Water Details</a>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>© 2026 HomeEco · Smart Household Resource Monitoring System</p>
+        </div>
+
+    </div>
+    <script src="auth.js"></script>
+
+</body>
+
+</html>

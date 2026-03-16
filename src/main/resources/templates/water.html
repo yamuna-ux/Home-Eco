@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Water Monitoring | HomeEco</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Tahoma, sans-serif
+        }
+
+        body {
+            min-height: 100vh;
+            background:
+                linear-gradient(rgba(0, 0, 0, .6), rgba(0, 0, 0, .6)),
+                url("https://images.unsplash.com/photo-1502741338009-cac2772e18bc");
+            background-size: cover;
+            background-attachment: fixed;
+            color: #fff;
+        }
+
+        .navbar {
+            padding: 22px 50px;
+            background: rgba(0, 0, 0, .7);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar h1 {
+            color: #2ecc71
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            margin-left: 25px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 50px auto;
+            padding: 20px
+        }
+
+        .panel {
+            background: rgba(0, 0, 0, .65);
+            padding: 30px;
+            border-radius: 18px;
+            margin-bottom: 35px;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 18px;
+            margin-top: 18px;
+        }
+
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+        }
+
+        .on {
+            background: #2ecc71;
+            color: #000
+        }
+
+        .off {
+            background: #e74c3c;
+            color: #fff
+        }
+
+        button:disabled {
+            opacity: .5;
+            cursor: not-allowed;
+        }
+
+        input {
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+        }
+
+        .meter {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 22px;
+            margin-bottom: 35px;
+        }
+
+        .box {
+            background: rgba(255, 255, 255, .08);
+            padding: 25px;
+            border-radius: 16px;
+            text-align: center;
+        }
+
+        .value {
+            font-size: 26px;
+            font-weight: bold
+        }
+
+        .room {
+            background: rgba(0, 0, 0, .65);
+            padding: 30px;
+            border-radius: 18px;
+            margin-bottom: 35px;
+        }
+
+        .status {
+            font-weight: 700
+        }
+
+        .green {
+            color: #2ecc71
+        }
+
+        .red {
+            color: #e74c3c
+        }
+
+        .alert,
+        .alert2 {
+            padding: 18px;
+            border-radius: 14px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .alert {
+            background: #e74c3c
+        }
+
+        .alert2 {
+            background: #f39c12;
+            color: #000
+        }
+
+        .records {
+            background: rgba(0, 0, 0, .65);
+            padding: 25px;
+            border-radius: 18px;
+            margin-bottom: 35px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+        }
+
+        th,
+        td {
+            border-bottom: 1px solid #444;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            color: #2ecc71
+        }
+
+        .note {
+            background: rgba(0, 0, 0, .65);
+            padding: 25px;
+            border-radius: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="navbar">
+        <h1>💧 Water Monitoring</h1>
+        <div class="nav-links">
+            <a href="dashboard.html">Dashboard</a>
+            <a href="energy.html">Energy</a>
+            <a href="login.html">Logout</a>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- CONTROL PANEL -->
+        <div class="panel">
+            <h2>Water Control Panel</h2>
+
+            <div class="controls">
+                <!-- ✅ METER NUMBER -->
+                <input type="text" id="waterMeterNo" placeholder="Enter Water Meter Number (min 10 digits)">
+
+                <button class="on" id="waterOnBtn" onclick="turnOnWater()" disabled>Water ON</button>
+                <button class="off" onclick="turnOffWater()">Water OFF</button>
+
+                <input type="number" id="limitWater" placeholder="Set water limit (Liters)">
+            </div>
+        </div>
+
+        <!-- METER -->
+        <div class="meter">
+            <div class="box">
+                <h3>Live Water Reading</h3>
+                <div class="value" id="waterReading">0.00 L</div>
+            </div>
+
+            <div class="box">
+                <h3>Valve Status</h3>
+                <div class="value" id="waterStatus">OFF</div>
+            </div>
+
+            <div class="box">
+                <h3>Flow Rate</h3>
+                <div class="value" id="flowRate">0.0 L/min</div>
+            </div>
+        </div>
+
+        <!-- SENSOR -->
+        <div class="room">
+            <h2>Room Sensor</h2>
+            <p>Human Presence: <span class="status red" id="humanWater">NO</span></p>
+            <p>Tap Status: <span class="status" id="tapStatus">OFF</span></p>
+            <button class="on" onclick="toggleHumanWater()">Toggle Human Presence</button>
+
+            <div class="alert" id="wastageAlert">
+                ⚠ Wastage Alert: No human detected but water is ON!
+            </div>
+
+            <div class="alert2" id="leakAlert">
+                ⚠ Leak suspected! Continuous high flow detected.
+            </div>
+        </div>
+
+        <!-- RECORDS -->
+        <div class="records">
+            <h2>Water Usage Records</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date & Time</th>
+                        <th>Water Used (L)</th>
+                    </tr>
+                </thead>
+                <tbody id="waterRecordBody"></tbody>
+            </table>
+        </div>
+
+        <div class="note">
+            <strong>Logic:</strong><br>
+            • Meter number ≥ 10 digits enables Water ON<br>
+            • Limit exceeded → popup + auto OFF<br>
+            • Records saved with real date & time
+        </div>
+
+    </div>
+
+    <script>
+        let waterOn = false;
+        let waterReading = 0;
+        let humanPresentWater = false;
+        let waterInterval = null;
+        let startTime = null;
+        let highFlowSeconds = 0;
+
+        const meterInput = document.getElementById("waterMeterNo");
+        const onBtn = document.getElementById("waterOnBtn");
+
+        meterInput.addEventListener("input", () => {
+            onBtn.disabled = meterInput.value.trim().length < 10 || waterOn;
+        });
+
+        function turnOnWater() {
+            if (waterOn) return;
+
+            waterOn = true;
+            startTime = new Date();
+            waterReading = 0;
+            highFlowSeconds = 0;
+
+            onBtn.disabled = true;
+
+            document.getElementById("waterStatus").innerText = "ON";
+            document.getElementById("tapStatus").innerText = "ON";
+
+            waterInterval = setInterval(() => {
+                const flow = Math.random() * 8 + 2;
+                document.getElementById("flowRate").innerText = flow.toFixed(1) + " L/min";
+
+                waterReading += flow / 60;
+                document.getElementById("waterReading").innerText = waterReading.toFixed(2) + " L";
+
+                if (!humanPresentWater) {
+                    document.getElementById("wastageAlert").style.display = "block";
+                } else {
+                    document.getElementById("wastageAlert").style.display = "none";
+                }
+
+                if (flow > 8) highFlowSeconds++; else highFlowSeconds = 0;
+                if (highFlowSeconds >= 12) document.getElementById("leakAlert").style.display = "block";
+
+                const limit = Number(document.getElementById("limitWater").value);
+                if (limit > 0 && waterReading >= limit) {
+                    alert("⚠ Water limit exceeded! Water turned OFF.");
+                    turnOffWater();
+                }
+            }, 1000);
+        }
+
+        function turnOffWater() {
+            if (!waterOn) return;
+
+            waterOn = false;
+            clearInterval(waterInterval);
+
+            document.getElementById("waterStatus").innerText = "OFF";
+            document.getElementById("tapStatus").innerText = "OFF";
+            document.getElementById("flowRate").innerText = "0.0 L/min";
+            document.getElementById("wastageAlert").style.display = "none";
+            document.getElementById("leakAlert").style.display = "none";
+
+            document.getElementById("waterRecordBody").innerHTML += `
+        <tr>
+            <td>${startTime.toLocaleString()}</td>
+            <td>${waterReading.toFixed(2)}</td>
+        </tr>`;
+
+            onBtn.disabled = meterInput.value.trim().length < 10;
+        }
+
+        function toggleHumanWater() {
+            humanPresentWater = !humanPresentWater;
+            const el = document.getElementById("humanWater");
+            el.innerText = humanPresentWater ? "YES" : "NO";
+            el.className = humanPresentWater ? "status green" : "status red";
+        }
+    </script>
+
+</body>
+
+</html>

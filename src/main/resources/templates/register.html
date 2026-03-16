@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register | HomeEco</title>
+    
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Tahoma, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background:
+                linear-gradient(rgba(0, 0, 0, .65), rgba(0, 0, 0, .65)),
+                url("https://images.unsplash.com/photo-1509395176047-4a66953fd231?auto=format&fit=crop&w=1400&q=80");
+            background-size: cover;
+            background-attachment: fixed;
+            color: #fff;
+            padding: 20px;
+        }
+
+        .card {
+            width: 420px;
+            background: rgba(0, 0, 0, .70);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 18px;
+            padding: 28px;
+            box-shadow: 0 18px 60px rgba(0, 0, 0, .55);
+        }
+
+        .title {
+            font-size: 28px;
+            font-weight: 800;
+            color: #2ecc71;
+            margin-bottom: 6px;
+        }
+
+        .sub {
+            color: rgba(255, 255, 255, 0.75);
+            margin-bottom: 18px;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        label {
+            display: block;
+            margin-top: 14px;
+            margin-bottom: 8px;
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            outline: none;
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            transition: .2s;
+        }
+
+        input:focus {
+            border-color: rgba(46, 204, 113, 0.5);
+            box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.12);
+        }
+
+        /* ✅ red input on invalid */
+        .invalid{
+  border-color: rgba(231,76,60,0.9) !important;
+  box-shadow:0 0 0 3px rgba(231,76,60,0.15) !important;
+}
+
+
+        .error {
+            margin-top: 6px;
+            font-size: 13px;
+            color: #ff7676;
+            display: none;
+        }
+
+        .btn {
+            width: 100%;
+            margin-top: 18px;
+            padding: 12px 14px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 900;
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: #04110b;
+            transition: .2s;
+        }
+
+        .btn:hover {
+            filter: brightness(1.06);
+            transform: translateY(-1px);
+        }
+
+        .row {
+            margin-top: 12px;
+            text-align: center;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .row a {
+            color: #2ecc71;
+            text-decoration: none;
+            font-weight: 800;
+        }
+
+        .row a:hover {
+            text-decoration: underline;
+        }
+
+        .hint {
+            margin-top: 12px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.65);
+            line-height: 1.6;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="card">
+        <div class="title">Create Account</div>
+        <div class="sub">Register with a valid email to access the HomeEco dashboard.</div>
+
+        <input type="text" id="email" placeholder="example@gmail.com" oninput="validateEmailLive()"
+            onblur="validateEmailLive()" />
+        <div class="error" id="emailError">Invalid email</div>
+
+
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Create password" />
+
+        <label for="confirm">Confirm Password</label>
+        <input type="password" id="confirm" placeholder="Confirm password" />
+
+        <button class="btn" onclick="registerWithValidation()">Register</button>
+        <div class="error" id="serverError" style="display:none;"></div>
+
+        <div class="row">
+            Already registered? <a href="login.html">Login</a>
+        </div>
+
+        <div class="hint">
+            Note: Real email existence checking requires OTP verification (backend). This page validates email format
+            and registers via your backend API.
+        </div>
+    </div>
+
+    <!-- Use your existing auth.js OR keep this script -->
+    <script>
+       const API = "http://localhost:8081/api/auth";
+
+       
+            function isValidEmailFormat(email) {
+                return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i.test(email.trim());
+            }
+
+            function showEmailError(show) {
+                const emailEl = document.getElementById("email");
+                const errEl = document.getElementById("emailError");
+
+                if (show) {
+                    emailEl.classList.add("invalid");
+                    errEl.style.display = "block";
+                } else {
+                    emailEl.classList.remove("invalid");
+                    errEl.style.display = "none";
+                }
+            }
+
+            function showServerError(msg) {
+                const s = document.getElementById("serverError");
+                if (!s) return;
+                if (msg) {
+                    s.style.display = "block";
+                    s.textContent = msg;
+                } else {
+                    s.style.display = "none";
+                    s.textContent = "";
+                }
+            }
+
+            function validateEmailLive() {
+                const email = document.getElementById("email").value.trim();
+                if (email === "") {
+                    showEmailError(false);
+                    return true;
+                }
+                const ok = isValidEmailFormat(email);
+                showEmailError(!ok);
+                return ok;
+            }
+
+           async function registerWithValidation() {
+                showServerError("");
+
+                const email = document.getElementById("email").value.trim();
+                const pass = document.getElementById("password").value;
+                const confirm = document.getElementById("confirm").value;
+
+                if (!isValidEmailFormat(email)) {
+                    showEmailError(true);
+                    return;
+                } else {
+                    showEmailError(false);
+                }
+
+                if (!pass || !confirm) {
+                    showServerError("All fields are required.");
+                    return;
+                }
+
+                if (pass !== confirm) {
+                    showServerError("Passwords do not match.");
+                    return;
+                }
+
+                try {
+                    const res = await fetch(API + "/register", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ email, password: pass })
+                    });
+
+                    const text = await res.text();
+
+                    if (!res.ok) {
+                        if (text.toLowerCase().includes("email")) {
+                            showEmailError(true);
+                        }
+                        showServerError(text || "Registration failed.");
+                        return;
+                    }
+
+                    // SUCCESS
+                    window.location.href = "login.html";
+
+                } catch (err) {
+                    console.error(err);
+                    showServerError("Server not running or CORS blocked.");
+                }
+            }
+
+
+    </script>
+</body>
+
+</html>
