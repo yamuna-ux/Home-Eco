@@ -1,5 +1,5 @@
 /* ================= CONFIG ================= */
-const API = "http://localhost:8081/api/auth";
+const API = "https://home-eco-1.onrender.com/api/auth";
 let timer = 50;
 let interval;
 
@@ -136,8 +136,7 @@ const otp = otpInput ? otpInput.value : otp;
 }
 
 /* ================= RESET PASSWORD ================= */
-const API_RESET = "http://localhost:8081/api/auth/reset-password";
-
+const API_RESET = "https://home-eco-1.onrender.com/api/auth/reset-password";
 function resetPasswordAPI(password) {
     const email = localStorage.getItem("resetEmail");
 
