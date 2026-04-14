@@ -28,7 +28,7 @@ function register() {
     .then(msg => {
       alert(msg);
       if (msg.toLowerCase().includes("success")) {
-        window.location.href = "login.html";
+       window.location.href = "/admin/login.html";
       }
     })
     .catch(() => alert("Registration failed"));
@@ -53,7 +53,7 @@ function login() {
     .then(msg => {
       alert(msg);
       if (!msg.toLowerCase().includes("invalid")) {
-        window.location.href = "dashboard.html";
+        window.location.href = "/admin/dashboard.html";
       }
     })
     .catch(() => alert("Login failed"));
@@ -129,7 +129,7 @@ const otp = otpInput ? otpInput.value : otp;
     .then(msg => {
       alert(msg);
       if (msg.toLowerCase().includes("verified")) {
-        window.location.href = "reset-password.html";
+        window.location.href = "/admin/reset-password.html";
       }
     })
     .catch(() => alert("OTP verification failed"));
@@ -167,7 +167,7 @@ function resetPasswordAPI(password) {
 
             // ✅ redirect to login
             setTimeout(() => {
-                window.location.href = "login.html";
+                window.location.href = "/admin/login.html";
             }, 1200);
         } else {
             msg.style.color = "red";
