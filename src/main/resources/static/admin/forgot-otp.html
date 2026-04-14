@@ -136,23 +136,42 @@
             return;
         }
 
-        const res = await fetch("http://localhost:8081/api/auth/verify-otp", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, otp })
-        });
+        const API = "https://home-eco-1.onrender.com/api/auth";
 
-        const text = await res.text();
+        async function verifyOTP() {
+            const otp = [...inputs].map(i => i.value).join("");
+            const email = localStorage.getItem("resetEmail");
+            const msg = document.getElementById("msg");
 
-        if (res.ok) {
-            msg.style.color = "lightgreen";
-            msg.textContent = "OTP verified successfully";
-            setTimeout(() => {
-                window.location.href = "reset-password.html";
-            }, 1200);
-        } else {
-            msg.style.color = "red";
-            msg.textContent = text;
+            if (otp.length !== 6) {
+                msg.textContent = "Enter 6-digit OTP";
+                msg.style.color = "red";
+                return;
+            }
+
+            try {
+                const res = await fetch(
+                    API + "/verify-otp?email=" + encodeURIComponent(email) + "&otp=" + otp,
+                    { method: "POST" }
+                );
+
+                const text = await res.text();
+
+                if (res.ok) {
+                    msg.style.color = "lightgreen";
+                    msg.textContent = "OTP verified successfully";
+                    setTimeout(() => {
+                        window.location.href = "reset-password.html";
+                    }, 1200);
+                } else {
+                    msg.style.color = "red";
+                    msg.textContent = text;
+                }
+            } catch (err) {
+                console.error(err);
+                msg.style.color = "red";
+                msg.textContent = "Network error or server issue";
+            }
         }
     }
 </script>

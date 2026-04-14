@@ -150,7 +150,7 @@
         const API = "https://home-eco-1.onrender.com/api/auth";
 
 
-        async function login() {
+       async function login() {
             const email = document.getElementById("email").value.trim();
             const password = document.getElementById("password").value;
             const msg = document.getElementById("msg");
@@ -164,7 +164,7 @@
             }
 
             try {
-                const res = await fetch(API, {
+                const res = await fetch(API + "/login", {   // ✅ FIXED
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ email, password })
@@ -180,9 +180,10 @@
                     msg.style.color = "#ff7675";
                     msg.textContent = text;
                 }
-            } catch {
+            } catch (err) {
+                console.error(err);
                 msg.style.color = "#ff7675";
-                msg.textContent = "Server not running";
+                msg.textContent = "Network error or server issue";
             }
         }
     </script>
